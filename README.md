@@ -1,5 +1,6 @@
 # VisualMetronome
 <img width="350" alt="visualmetronomekuvat" src="https://user-images.githubusercontent.com/117892331/225331975-8f40658c-4e62-435a-9668-9dda001c0f55.png">
+
 *Java, Android Studio, OpenGL*
 
 **Visual Metronome on musiikin harjoitteluun tarkoitettu apuohjelma. Joillakin muusikoilla rytmitaju saattaa heikentyä soittaessa monimutkaisempia kuvioita, jolloin aivot priorisoi rytmin pitämisen sijaan muita soittamiseen tarvittavia keskittymis alueita. Tässä ongelmana on myös se, että itse soittaja ei välttämättä edes kuule omia rytmi ongelmiaan. Visual Metronome pyrkii ratkaisemaan nämä ongelmat antamalla reaali aikaista selkeää feedbackiä, jolloin soittaja näkee virheet heti niiden tapahduttua.**
