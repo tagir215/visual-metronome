@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -28,28 +29,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class PlaybackAction {
     private static int MICROPHONE_PERMISSION_CODE = 200;
     MainActivity main;
-
     AcousticEchoCanceler acousticEchoCanceler;
-
     List<Float>samples = Collections.synchronizedList(new ArrayList<>());
     final int DRAW_QUEUE_LENGTH = 50;
-    int bufferSize;
     int audioEncoding;
-    final int SAMPLE_RATE = 48000;
     Queue<short[]>bufferQueue = new ConcurrentLinkedQueue<>();
     Queue<Double> amplitudeQueue = new ConcurrentLinkedQueue<>();
     Thread threadRecord;
     boolean soundHasExisted;
-    boolean interrupted = true;
     int soundNeverExistedCount =0;
     ImageButton buttonMic;
     Timer timer;
     TimerTask timerTask;
-    OpenGLRenderer openGLRenderer;
-    FFT fft = new FFT(SAMPLE_RATE);
-    YIN yin = new YIN();
     Settings settings;
-    Metronome metronome;
     Autocorrelation autocorrelation;
     Recording recording;
     PlayAudio playAudio;
@@ -58,13 +50,8 @@ public class PlaybackAction {
         this.main = main;
         setButton();
         audioSettings();
-        openGLRenderer = main.openGLView.renderer;
         settings = new Settings(main);
-        metronome = new Metronome(openGLRenderer);
-        metronome.start();
-        recording = new Recording(this,openGLRenderer,SAMPLE_RATE,bufferSize);
-        playAudio = new PlayAudio(this,openGLRenderer);
-        playAudio.createAudioTrack(SAMPLE_RATE,bufferSize);
+        Metronome.start();
     }
 
     void setTimer(){
@@ -129,14 +116,15 @@ public class PlaybackAction {
             public void onClick(View view) {
                 if (checkMicrophone())
                     getPermission();
-                if(interrupted) {
-                    interrupted = false;
+                if(Recording.interrupted) {
+                    Recording.interrupted = false;
                     startRecording();
                 }
                 else{
-                    interrupted = true;
+                    Recording.interrupted = true;
                     stopAll();
                 }
+                PlayAudio.interrupted = true;
             }
         });
     }
@@ -149,7 +137,7 @@ public class PlaybackAction {
         threadRecord = new Thread(new Runnable() {
             @Override
             public void run() {
-                recording.record();
+                Recording.record(main,OpenGLView.renderer,PlaybackAction.this);
             }
         });
         threadRecord.start();
@@ -161,8 +149,7 @@ public class PlaybackAction {
             threadRecord.interrupt();
         threadRecord = null;
         endTimer();
-        openGLRenderer.recording=false;
-        buttonMic.setColorFilter(Color.WHITE);
+        OpenGLView.renderer.recording=false;
         buttonMic.setImageResource(R.drawable.ic_baseline_mic_24);
         buttonMic.setColorFilter(Color.WHITE);
     }
@@ -171,7 +158,7 @@ public class PlaybackAction {
         AudioManager audioManager = (AudioManager) main.getSystemService(Context.AUDIO_SERVICE);
         audioManager.setMode(AudioManager.MODE_NORMAL);
         audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
-        bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, audioEncoding);
+        Settings.bufferSize = AudioRecord.getMinBufferSize(Settings.SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, audioEncoding);
     }
 
 
@@ -183,11 +170,11 @@ public class PlaybackAction {
     void endRecordingAndPlay(){
         threadRecord.interrupt();
         threadRecord = null;
-        recording.interrupted = true;
+        Recording.interrupted = true;
         endTimer();
         buttonMic.setImageResource(R.drawable.ic_baseline_play_arrow_24);
         buttonMic.setColorFilter(Color.WHITE);
-        playAudio.playAudio(bufferQueue);
+        playAudio.playAudio(bufferQueue,OpenGLView.renderer,this);
     }
 
 

@@ -10,17 +10,17 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class GLLine {
-    FloatBuffer vertexBuffer;
-    static final int COORDS_PER_VERTEX = 3;
-    int program;
-    int positionHandle;
-    int colorHandle;
-    int vertexCount;
-    int vertexStride;
-    int vPMatrixHandle;
-    float width = 3f;
-    boolean active = true;
-    float[] coords = new float[] {
+    private FloatBuffer vertexBuffer;
+    private static final int COORDS_PER_VERTEX = 3;
+    private int program;
+    private int positionHandle;
+    private int colorHandle;
+    private int vertexCount;
+    private int vertexStride;
+    private int vPMatrixHandle;
+    private float width = 3f;
+    public boolean active = true;
+    public float[] coords = new float[] {
             -1f,0.5f,0,
             1f,0.5f,0,
     };

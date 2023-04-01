@@ -7,26 +7,23 @@ import java.util.List;
 
 public class FFT {
 
-    private final double pi = Math.PI;
-    ComplexNumber[] frequencyBins;
+    private static final double pi = Math.PI;
+    public static ComplexNumber[] frequencyBins;
     int sampleRate;
-    FFT(int sampleRate){
-        this.sampleRate =sampleRate;
-    }
 
-    double calculateFrequency(ComplexNumber[] frequencyBins){
-        double frequency = calculateEquivalentFrequency(findPeakMagnitudePosition(),frequencyBins.length,sampleRate);
+    private static double calculateFrequency(ComplexNumber[] frequencyBins){
+        double frequency = calculateEquivalentFrequency(findPeakMagnitudePosition(),frequencyBins.length,Settings.SAMPLE_RATE);
         return frequency;
     }
 
-    ComplexNumber[]getFFT(List<Float>samples){
+    public static ComplexNumber[]getFFT(List<Float>samples){
         frequencyBins = fft(inputToComplexNumbers(samples));
         //double freq = calculateEquivalentFrequency(findPeakMagnitudePosition(),samples.size(),sampleRate);
         //Log.e("freq","frequency is "+freq+"Hz");
         return frequencyBins;
     }
 
-    ComplexNumber[] inputToComplexNumbers(List<Float>samples){
+    public static ComplexNumber[] inputToComplexNumbers(List<Float> samples){
         ComplexNumber[] complexNumbers = new ComplexNumber[samples.size()];
         for (int i=0; i<samples.size(); i++){
             float s = Math.abs(samples.get(i));
@@ -35,7 +32,7 @@ public class FFT {
         return complexNumbers;
     }
 
-    ComplexNumber[] fft(ComplexNumber[] complexNumbers){
+    public static ComplexNumber[] fft(ComplexNumber[] complexNumbers){
         int N = complexNumbers.length;
         if(N==1) {
             return new ComplexNumber[]{complexNumbers[0]};
@@ -63,12 +60,12 @@ public class FFT {
     }
 
 
-    int findPeakMagnitudePosition(){
+    public static int findPeakMagnitudePosition(){
         double magnitude = 0;
         int k = 0;;
         for(int i=3; i<frequencyBins.length/2; i++){
             ComplexNumber c = frequencyBins[i];
-            double m = Math.sqrt(c.real*c.real + c.img * c.img);
+            double m = Math.sqrt(c.getReal()*c.getReal() + c.getImg() * c.getImg());
             if(m>magnitude) {
                 magnitude = m;
                 k = i;
@@ -80,7 +77,7 @@ public class FFT {
         return k;
     }
 
-    double calculateEquivalentFrequency(double k, double sampleSize, double sampleRate){
+    private static double calculateEquivalentFrequency(double k, double sampleSize, double sampleRate){
         return (k / sampleSize) * sampleRate;
     }
 

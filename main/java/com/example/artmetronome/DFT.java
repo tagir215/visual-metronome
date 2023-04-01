@@ -6,56 +6,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DFT {
-    List<Float> sampleList;
-    List<ComplexNumber>frequencyBins;
-    StringBuilder stringBuilder;
-    int sampleRate;
-    float frequency;
-    DFT(int sampleRate){
-        this.sampleRate = sampleRate;
-    }
-    float sampleSize;
-    final float pi2 =2f* (float)Math.PI;
-
-    void calculateFrequency(List<Float>samples){
-        this.sampleList = samples;
-        sampleSize = samples.size();
+    private static final float pi2 =2f* (float)Math.PI;
+    public static List<ComplexNumber>frequencyBins;
+    public static float calculateFrequency(List<Float>samples){
         frequencyBins = new ArrayList<>();
-        stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
-        for(int i = 0; i< sampleSize; i++){
-            stringBuilder.append("\n"+Math.abs(sampleList.get(i))+",");
+        for(int i = 0; i< samples.size(); i++){
+            stringBuilder.append("\n"+Math.abs(samples.get(i))+",");
         }
 
-        for(float k = 0; k< sampleSize; k++){
-            ComplexNumber sum = transformFourier(k);
+        for(float k = 0; k< samples.size(); k++){
+            ComplexNumber sum = transformFourier(k,samples);
             frequencyBins.add(sum);
         }
         for(int i=0; i<frequencyBins.size(); i++){
-            stringBuilder.append("\n"+frequencyBins.get(i).real+","+frequencyBins.get(i).img+"i");
+            stringBuilder.append("\n"+frequencyBins.get(i).getReal()+","+frequencyBins.get(i).getImg()+"i");
         }
 
 
-        frequency = calculateEquivalentFrequency(findPeakMagnitudePosition());
+        return calculateEquivalentFrequency(findPeakMagnitudePosition(),samples.size());
     }
 
-    ComplexNumber transformFourier(float k){
+    private static ComplexNumber transformFourier(float k,List<Float>samples){
         ComplexNumber sum = new ComplexNumber(0,0);
-        for (float n = 0; n< sampleSize; n++){
-            float angle = -(pi2*k*n) / sampleSize;
+        for (float n = 0; n< samples.size(); n++){
+            float angle = -(pi2*k*n) / samples.size();
             ComplexNumber c = new ComplexNumber((float)Math.cos(angle),(float)Math.sin(angle));
-            float x = sampleList.get((int)n);
+            float x = samples.get((int)n);
             sum = sum.plus(c.times(x));
         }
         return sum;
     }
 
-    int findPeakMagnitudePosition(){
+    private static int findPeakMagnitudePosition(){
         float magnitude = 0;
         int k = 0;
         for(int i=1; i<frequencyBins.size()/2; i++){
             ComplexNumber c = frequencyBins.get(i);
-            float m = (float)Math.sqrt(c.real*c.real + c.img * c.img);
+            float m = (float)Math.sqrt(c.getReal()*c.getReal() + c.getImg() * c.getImg());
             if(m>magnitude) {
                 magnitude = m;
                 k = i;
@@ -64,8 +53,8 @@ public class DFT {
         return k;
     }
 
-    float calculateEquivalentFrequency(int k){
-        return (k / sampleSize) * sampleRate;
+    private static float calculateEquivalentFrequency(int k,int size){
+        return (k / size) * Settings.SAMPLE_RATE;
     }
 
 

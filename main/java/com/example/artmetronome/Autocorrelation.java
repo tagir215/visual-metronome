@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Autocorrelation {
 
-    static double getFrequencyViaDotProduct(List<Float>samples, double timeStep){
+    public static double getFrequencyViaDotProduct(List<Float>samples, double timeStep){
         double r = 0;
         double position = 0;
         for (int i=10; i<samples.size(); i++){

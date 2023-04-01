@@ -4,15 +4,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Metronome {
-    Timer timer;
-    TimerTask task;
-    OpenGLRenderer renderer;
-    double bpm = 100;
-    int tick = 1;
-    Metronome(OpenGLRenderer renderer){
-        this.renderer = renderer;
-    }
-    void start(){
+    private static Timer timer;
+    private static TimerTask task;
+    public static double bpm = 100;
+    private static int tick = 1;
+    public static int metronomeTick = 0;
+    public static void start(){
         double time = 60/bpm/4 * 1000;
         timer = new Timer();
         task = new TimerTask() {
@@ -21,11 +18,11 @@ public class Metronome {
 
 
                 if(tick==1)
-                    renderer.metronomeTick=1;
+                    metronomeTick=1;
                 else if(tick==3)
-                    renderer.metronomeTick=3;
+                    metronomeTick=3;
                 else
-                    renderer.metronomeTick=2;
+                    metronomeTick=2;
 
                 if (tick == 4)
                     tick = 1;
@@ -37,13 +34,15 @@ public class Metronome {
         };
         timer.schedule(task,(int)time,(int)time);
     }
-    void setBpm(int bpm){
-        this.bpm = bpm;
-    }
-    void stop(){
+
+    public static void stop(){
         timer.cancel();
         task.cancel();
         timer = null;
         task = null;
+    }
+    public static void reset(){
+        stop();
+        start();
     }
 }

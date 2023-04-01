@@ -1,8 +1,25 @@
 package com.example.artmetronome;
 
 public class ComplexNumber {
-    float real;
-    float img;
+    private float real;
+
+    public float getReal() {
+        return real;
+    }
+
+    public void setReal(float real) {
+        this.real = real;
+    }
+
+    public float getImg() {
+        return img;
+    }
+
+    public void setImg(float img) {
+        this.img = img;
+    }
+
+    private float img;
     ComplexNumber(float real, float img){
         this.real = real;
         this.img = img;

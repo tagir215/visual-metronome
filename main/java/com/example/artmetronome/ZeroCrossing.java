@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ZeroCrossing {
-    static List<Float> getZeroCrossings(List<Float> samples, int sampleRate){
+    public static List<Float> getZeroCrossings(List<Float> samples, int sampleRate){
         float timeStep = 1 / (float)sampleRate;
         Object[] sampleArray = samples.toArray();
         List<Float>zeroCrossings = new ArrayList<>();
@@ -27,7 +27,7 @@ public class ZeroCrossing {
         return zeroCrossings;
     }
 
-    static int countHills(List<Float>samples){
+    public static int countHills(List<Float>samples){
         float oldY = 0;
         int sum= 0;
         for (int i=0; i<samples.size(); i++){
@@ -39,7 +39,7 @@ public class ZeroCrossing {
         }
         return sum;
     }
-   static int getMedian(List<Integer>hills){
+   public static int getMedian(List<Integer>hills){
        HashMap<Integer,Integer>valuemap = new HashMap<>();
         for (int i=0; i<hills.size(); i++){
             int num = 0;

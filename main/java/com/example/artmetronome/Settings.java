@@ -2,28 +2,33 @@ package com.example.artmetronome;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.text.InputType;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 public class Settings {
-    MainActivity main;
-    String[] titles;
-    String[] settings;
-    SettingStarters[] actions;
-    String[] sampleRates;
-    String[] saveFormat;
-    String[] microphones;
-    double waitTime;
-    int sampleRate = 48000;
+    private MainActivity main;
+    private String[] titles;
+    private String[] settings;
+    private SettingStarters[] actions;
+    private String[] sampleRates;
+    private String[] saveFormat;
+    private String[] microphones;
+    public static int bufferSize;
+    public static final int SAMPLE_RATE = 48000;
+    public static double waitTime;
+    public static int sampleRate = 48000;
     Settings(MainActivity main){
         this.main = main;
         waitTime = 1000;
-        settings = new String[] {"Wait Time","Save Format","Sample Rate","Microphone"};
+        settings = new String[] {"Wait Time","Save Format","Sample Rate","Microphone","Tempo"};
         actions = new SettingStarters[] {
                 this::setWaitTime,
                 this::setSaveFormat,
                 this::setSampleRate,
                 this::setMicrophone,
+                this::setTempo,
         };
         titles = new String[] {"1s","2s","3s","4s","5s","10s"};
         sampleRates = new String[] {"44100Hz","48000Hz","88200Hz"};
@@ -45,7 +50,7 @@ public class Settings {
     interface SettingsAction{
         void doSettingsAction(int i);
     }
-    void createSingleSettingDialog(String title, String[] names,int checkedItem, SettingsAction action){
+    private void createSingleSettingDialog(String title, String[] names,int checkedItem, SettingsAction action){
         AlertDialog.Builder builder = new AlertDialog.Builder(main);
         builder.setTitle(title);
         builder.setSingleChoiceItems(names, checkedItem, new DialogInterface.OnClickListener() {
@@ -58,7 +63,7 @@ public class Settings {
     }
 
 
-    void createSettingsDialog(){
+    private void createSettingsDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(main);
         builder.setTitle("Settings");
         builder.setItems(settings, new DialogInterface.OnClickListener() {
@@ -70,31 +75,62 @@ public class Settings {
         builder.show();
     }
 
-    void setWaitTime(){
+    private void setWaitTime(){
         createSingleSettingDialog("Sample Rate",titles,0,(i)->{
             String time = titles[i].replaceAll("[^0-9]","");
             waitTime = Double.parseDouble(time)*1000;
         });
     }
 
-    void setSaveFormat(){
+    private void setSaveFormat(){
         createSingleSettingDialog("Save Format",saveFormat,0,(i)->{
 
         });
     }
 
-    void setSampleRate(){
+    private void setSampleRate(){
         createSingleSettingDialog("Sample Rate",sampleRates,0,(i)->{
             String s = sampleRates[i].replaceAll("[^0-9]","");
             sampleRate = Integer.parseInt(s);
         });
     }
 
-    void setMicrophone(){
+    private void setMicrophone(){
         createSingleSettingDialog("Microphone",microphones,0,(i)->{
 
         });
     }
+
+    private void setTempo(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(main);
+        builder.setTitle("Set Tempo");
+
+        final EditText input = new EditText(main);
+
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String tempoString = input.getText().toString();
+                if (!tempoString.equals("")) {
+                    Metronome.bpm = Integer.parseInt(tempoString);
+                    Metronome.reset();
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
 
 
 }

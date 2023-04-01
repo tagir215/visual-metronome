@@ -5,9 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.SortedMap;
 
 public class Notes {
-    LinkedHashMap<Double,String> notes;
-    Notes(){
-        notes = new LinkedHashMap<Double,String>() {{
+    private static final LinkedHashMap<Double,String> notes = new LinkedHashMap<Double,String>() {{
             put(41.20,"E1");
             put(43.65,"F1");
             put(46.25,"F#1");
@@ -79,9 +77,9 @@ public class Notes {
             put(2093.00,"C7");
         }};
 
-    }
 
-    Object[] getNote(double freq){
+
+    public static Object[] getNote(double freq){
         double lowestDistance = 10000;
         String note = "empty";
         float position = 0;
@@ -93,8 +91,7 @@ public class Notes {
                 lowestDistance = distance;
                 position = i;
             }
-            i++;
-
+        i++;
         }
 
         return new Object[] {note,position};
