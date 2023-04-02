@@ -5,7 +5,7 @@
 
 **Visual Metronome on musiikin harjoitteluun tarkoitettu apuohjelma. Joillakin muusikoilla rytmitaju saattaa heikentyä soittaessa monimutkaisempia kuvioita, jolloin aivot priorisoi rytmin pitämisen sijaan muita soittamiseen tarvittavia keskittymis alueita. Tässä ongelmana on myös se, että itse soittaja ei välttämättä edes kuule omia rytmi ongelmiaan. Visual Metronome pyrkii ratkaisemaan nämä ongelmat antamalla reaali aikaista selkeää feedbackiä, jolloin soittaja näkee virheet heti niiden tapahduttua.**
 
--Sovellus pyrtkii tunnistamaan rytmejä musiikista
+- Sovellus pyrtkii tunnistamaan rytmejä musiikista
 - Kokeilin erilaisia tapoja rytmien tunnistamiseen, kuten Fast Fourier transformia ja autokorrelaatiota, mutta päädyin lopulta vain laskemaan ääni aaltojen nollakohtien määrät nopeuden vuoksi, sekä ottamaan huomioon myös amplitudin muutokset ylöspäin. Jos nollakohtien määrä muuttuu edelliseen nuottiin verrattuna, tai jos amplitudi nousee ylöspäin yllättäen. niin se on todennäköisesti uusi nuotti
 - Ääniallot ja rytmi kuviot on mallinnettu käyttäen OpenGL:ää
 - Rytmi kuviot muodostuvat y suunnassa suurempina nollakohtien perusteella sekä taas keltaisena tai läpinäkyvän punaisena äänen amplitudin mukaan
